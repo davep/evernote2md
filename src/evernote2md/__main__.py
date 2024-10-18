@@ -73,7 +73,8 @@ class EvernoteConverter(MarkdownConverter):
     def convert_img(self, el: Tag, text: str, convert_as_inline: bool) -> str:
         """Handle img tags."""
         try:
-            self.photos += [el["src"]]
+            if isinstance(photo := el["src"], str):
+                self.photos += [photo]
         except KeyError:
             pass
         return super().convert_img(el, text, convert_as_inline)
