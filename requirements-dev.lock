@@ -38,6 +38,10 @@ six==1.16.0
     # via markdownify
 soupsieve==2.6
     # via beautifulsoup4
+types-beautifulsoup4==4.12.0.20240907
+types-html5lib==1.1.11.20241018
+    # via types-beautifulsoup4
+types-pytz==2024.2.0.20241003
 typing-extensions==4.12.2
     # via mypy
 virtualenv==20.27.0
