@@ -37,6 +37,8 @@ class EvernoteConverter(MarkdownConverter):
         self.altitude = ""
 
     def convert_meta(self, el: Tag, text: str, convert_as_inline: bool) -> str:
+        """Handle meta tags."""
+        del text, convert_as_inline
         if not isinstance(item_property := el.get("itemprop"), str) or not isinstance(
             content := el.get("content"), str
         ):
@@ -58,6 +60,8 @@ class EvernoteConverter(MarkdownConverter):
         return ""
 
     def convert_div(self, el: Tag, text: str, convert_as_inline: bool) -> str:
+        """Handle div tags."""
+        del convert_as_inline
         try:
             if "para" in el["class"]:
                 return f"{text.strip()}\n"
@@ -76,17 +80,34 @@ class EvernoteEntry(NamedTuple):
     """Holds all the details of a journal entry in Evernote."""
 
     title: str
+    """The title for the journal entry."""
     text: str
+    """The text of the journal entry."""
     tags: set[str]
+    """The tags for the journal entry."""
     time_created: datetime
+    """The time the journal entry was created."""
     time_updated: datetime
+    """The time the journal entry was last updated."""
     latitude: float | None
+    """The latitude of the journal entry."""
     longitude: float | None
+    """The longitude of the journal entry."""
     altitude: float | None
+    """The altitude of the journal entry."""
     photos: list[str]
+    """The list of photos associated with the journal entry."""
 
     @classmethod
     def from_html(cls, html: str) -> EvernoteEntry:
+        """Create the Evernote entry from some HTML.
+
+        Args:
+            html: The HTML that contains the Evernote journal entry.
+
+        Returns:
+            A populated `EvernoteEntry` instance.
+        """
         data_parser = EvernoteConverter()
         markdown = data_parser.convert(html).strip()
         return cls(
