@@ -218,10 +218,25 @@ def export(evernote: Path, daily: Path) -> None:
     """
     for source in evernote.glob("*.html"):
         if source.name != "Evernote_index.html":
+            # Get the entry from the Evernote export.
             entry = EvernoteEntry.from_html(source.read_text())
-            print(f"Importing {entry.title} -> {entry.markdown_file}")
+            # Figure out the path to the output file.
+            markdown = daily / entry.markdown_file
+            # Ensure its directory exists so we can actually write the file.
+            markdown.parent.mkdir(parents=True, exist_ok=True)
+            markdown.write_text(entry.markdown)
+            print(f"Exported {entry.time_created}")
+            # If the entry has photos too...
             if entry.photos:
-                print(f"\t{entry.photos}")
+                # ...copy them to the attachment directory.
+                (attachments := (daily / entry.markdown_attachment_directory)).mkdir(
+                    parents=True, exist_ok=True
+                )
+                for photo in entry.photos:
+                    print(f"\tAttaching {photo}")
+                    (attachments / Path(photo).name).write_bytes(
+                        (evernote / photo).read_bytes()
+                    )
 
 
 ##############################################################################
