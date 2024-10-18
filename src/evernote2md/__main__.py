@@ -190,7 +190,8 @@ class EvernoteEntry(NamedTuple):
         """The tags formatted for use in Markdown front matter."""
 
         def clean(tag: str) -> str:
-            return tag.replace(" ", "-").replace("&", "")
+            # TODO: Make the tag conversion configurable.
+            return {"sl": "secondlife"}.get(tag, tag).replace(" ", "-").replace("&", "")
 
         return (
             f"tags:\n  - {'\n  - '.join(clean(tag) for tag in self.tags)}"
