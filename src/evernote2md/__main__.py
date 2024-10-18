@@ -74,9 +74,8 @@ class EvernoteConverter(MarkdownConverter):
         """Handle img tags."""
         try:
             if isinstance(photo := el["src"], str):
-                photo = Path(photo).name
                 self.photos += [photo]
-                return f"![[{photo}]]"
+                return f"![[{Path(photo).name}]]"
         except KeyError:
             pass
         return super().convert_img(el, text, convert_as_inline)
