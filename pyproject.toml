@@ -5,6 +5,7 @@ description = "A command line tool to make a Markdown vault from an Evernote exp
 authors = [
     { name = "Dave Pearson", email = "davep@davep.org" }
 ]
+license = { file = "LICENSE" }
 dependencies = [
     "markdownify>=0.13.1",
     "pytz>=2024.2",
