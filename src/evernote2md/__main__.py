@@ -14,13 +14,14 @@ from typing import Final, NamedTuple
 ##############################################################################
 # Markdownift imports.
 from bs4.element import Tag
-from markdownify import MarkdownConverter
+from markdownify import MarkdownConverter  # type: ignore
 
 ##############################################################################
 # Timezime help.
 from pytz import timezone
 
 TIMEZONE: Final[str] = "Europe/London"
+
 
 ##############################################################################
 class EvernoteConverter(MarkdownConverter):
@@ -38,7 +39,9 @@ class EvernoteConverter(MarkdownConverter):
         self.altitude = ""
 
     def convert_meta(self, el: Tag, text: str, convert_as_inline: bool) -> str:
-        if not isinstance(item_property := el.get("itemprop"), str) or not isinstance(content := el.get("content"), str):
+        if not isinstance(item_property := el.get("itemprop"), str) or not isinstance(
+            content := el.get("content"), str
+        ):
             return ""
         if item_property == "tag":
             self.found_tags.add(content)
@@ -64,6 +67,7 @@ class EvernoteConverter(MarkdownConverter):
             pass
         return ""
 
+
 ##############################################################################
 class EvernoteEntry(NamedTuple):
     """Holds all the details of a journal entry in Evernote."""
@@ -86,12 +90,16 @@ class EvernoteEntry(NamedTuple):
             data_parser.found_title,
             markdown,
             data_parser.found_tags,
-            datetime.strptime(data_parser.time_created, "%Y%m%dT%H%M%S%z").astimezone(timezone(TIMEZONE)),
-            datetime.strptime(data_parser.time_updated, "%Y%m%dT%H%M%S%z").astimezone(timezone(TIMEZONE)),
+            datetime.strptime(data_parser.time_created, "%Y%m%dT%H%M%S%z").astimezone(
+                timezone(TIMEZONE)
+            ),
+            datetime.strptime(data_parser.time_updated, "%Y%m%dT%H%M%S%z").astimezone(
+                timezone(TIMEZONE)
+            ),
             float(data_parser.latitide) if data_parser.latitide else None,
             float(data_parser.longitude) if data_parser.longitude else None,
             float(data_parser.altitude) if data_parser.altitude else None,
-            []                  # TODO
+            [],  # TODO
         )
 
     @property
@@ -111,6 +119,7 @@ class EvernoteEntry(NamedTuple):
             self.time_created.strftime("%Y-%m-%d-%H-%M-%S-%f-%Z.md")
         )
 
+
 ##############################################################################
 def get_args() -> Namespace:
     """Get the command line arguments.
@@ -124,7 +133,8 @@ def get_args() -> Namespace:
     )
 
     parser.add_argument(
-        "evernote_files", help="The directory that contains the unzipped Evernote export"
+        "evernote_files",
+        help="The directory that contains the unzipped Evernote export",
     )
     parser.add_argument(
         "target_directory",
@@ -132,6 +142,7 @@ def get_args() -> Namespace:
     )
 
     return parser.parse_args()
+
 
 ##############################################################################
 def export(evernote: Path, daily: Path) -> None:
@@ -146,6 +157,7 @@ def export(evernote: Path, daily: Path) -> None:
             entry = EvernoteEntry.from_html(source.read_text())
             print(f"Importing {entry.title} -> {entry.markdown_file}")
 
+
 ##############################################################################
 def main() -> None:
     """Main entry point for the utility."""
@@ -157,6 +169,7 @@ def main() -> None:
         print("The target needs to be an existing directory")
         exit(1)
     export(evernote, daily)
+
 
 ##############################################################################
 if __name__ == "__main__":
