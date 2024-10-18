@@ -208,6 +208,7 @@ class EvernoteEntry(NamedTuple):
             for matter in (
                 f"journal-time: {self.time_created}",
                 f"modified-time: {self.time_updated}",
+                f"timezone: {TIMEZONE}",
                 f"latitude: {self.latitude}" if self.latitude is not None else "",
                 f"longitude: {self.longitude}" if self.longitude is not None else "",
                 f"altitude: {self.altitude}" if self.altitude is not None else "",
