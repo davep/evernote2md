@@ -35,6 +35,7 @@ class EvernoteConverter(MarkdownConverter):
         self.latitide = ""
         self.longitude = ""
         self.altitude = ""
+        self.photos: list[str] = []
 
     def convert_meta(self, el: Tag, text: str, convert_as_inline: bool) -> str:
         """Handle meta tags."""
@@ -68,6 +69,14 @@ class EvernoteConverter(MarkdownConverter):
         except KeyError:
             pass
         return ""
+
+    def convert_img(self, el: Tag, text: str, convert_as_inline: bool) -> str:
+        """Handle img tags."""
+        try:
+            self.photos += [el["src"]]
+        except KeyError:
+            pass
+        return super().convert_img(el, text, convert_as_inline)
 
 
 ##############################################################################
@@ -123,7 +132,7 @@ class EvernoteEntry(NamedTuple):
             float(data_parser.latitide) if data_parser.latitide else None,
             float(data_parser.longitude) if data_parser.longitude else None,
             float(data_parser.altitude) if data_parser.altitude else None,
-            [],  # TODO
+            data_parser.photos,
         )
 
     @property
@@ -180,6 +189,8 @@ def export(evernote: Path, daily: Path) -> None:
         if source.name != "Evernote_index.html":
             entry = EvernoteEntry.from_html(source.read_text())
             print(f"Importing {entry.title} -> {entry.markdown_file}")
+            if entry.photos:
+                print(f"\t{entry.photos}")
 
 
 ##############################################################################
