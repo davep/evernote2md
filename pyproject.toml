@@ -1,7 +1,7 @@
 [project]
 name = "evernote2md"
 version = "0.1.0"
-description = "Add your description here"
+description = "A command line tool to make a Markdown vault from an Evernote export"
 authors = [
     { name = "Dave Pearson", email = "davep@davep.org" }
 ]
@@ -10,7 +10,13 @@ dependencies = [
     "pytz>=2024.2",
 ]
 readme = "README.md"
-requires-python = ">= 3.8"
+requires-python = ">= 3.12"
+
+[project.urls]
+Homepage = "https://github.com/davep/evernote2md"
+Repository = "https://github.com/davep/evernote2md"
+Documentation = "https://github.com/davep/evernote2md"
+Issues = "https://github.com/davep/evernote2md/issues"
 
 [project.scripts]
 evernote2md = "evernote2md.__main__:main"
