@@ -167,7 +167,15 @@ class EvernoteEntry(NamedTuple):
     @property
     def _front_matter_tags(self) -> str:
         """The tags formatted for use in Markdown front matter."""
-        return f"tags:\n  - {'\n  - '.join(self.tags)}" if self.tags else ""
+
+        def clean(tag: str) -> str:
+            return tag.replace(" ", "-").replace("&", "")
+
+        return (
+            f"tags:\n  - {'\n  - '.join(clean(tag) for tag in self.tags)}"
+            if self.tags
+            else ""
+        )
 
     @property
     def markdown(self) -> str:
