@@ -153,6 +153,35 @@ class EvernoteEntry(NamedTuple):
             self.time_created.strftime("%Y-%m-%d-%H-%M-%S-%f-%Z.md")
         )
 
+    @property
+    def _front_matter_tags(self) -> str:
+        """The tags formatted for use in Markdown front matter."""
+        return f"tags:\n  - {'\n  - '.join(self.tags)}" if self.tags else ""
+
+    @property
+    def markdown(self) -> str:
+        """The Evernote journal entry as a markdown document."""
+
+        # Start with the front matter.
+        front_matter = "\n".join(
+            matter
+            for matter in (
+                f"journal-time: {self.time_created}",
+                f"modified-time: {self.time_updated}",
+                f"latitude: {self.latitude}" if self.latitude is not None else "",
+                f"longitude: {self.longitude}" if self.longitude is not None else "",
+                f"altitude: {self.altitude}" if self.altitude is not None else "",
+                f"photo-count: {len(self.photos)}",
+                self._front_matter_tags,
+                "original-type: html",
+            )
+            if matter
+        )
+        return (
+            f"---\n{front_matter}\n---\n\n"
+            f"# {self.time_created.strftime('%A, %-d %B %Y at %X')}\n\n{self.text}"
+        )
+
 
 ##############################################################################
 def get_args() -> Namespace:
