@@ -20,8 +20,6 @@ from markdownify import MarkdownConverter  # type: ignore
 # Timezime help.
 from pytz import timezone
 
-TIMEZONE: Final[str] = "Europe/London"
-
 
 ##############################################################################
 class EvernoteConverter(MarkdownConverter):
@@ -66,6 +64,11 @@ class EvernoteConverter(MarkdownConverter):
         except KeyError:
             pass
         return ""
+
+
+##############################################################################
+TIMEZONE: Final[str] = "Europe/London"
+"""The timezone to use when presenting times."""
 
 
 ##############################################################################
