@@ -60,6 +60,16 @@ class EvernoteConverter(MarkdownConverter):
             self.altitude = content
         return ""
 
+    def convert_h1(self, el: Tag, text: str, convert_as_inline: bool) -> str:
+        """Handle h1 tags."""
+        del convert_as_inline
+        try:
+            if "noteTitle" in el["class"]:
+                return f"## {text.strip()}\n\n"
+        except KeyError:
+            pass
+        return ""
+
     def convert_div(self, el: Tag, text: str, convert_as_inline: bool) -> str:
         """Handle div tags."""
         del convert_as_inline
