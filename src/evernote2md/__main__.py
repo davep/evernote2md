@@ -43,7 +43,7 @@ def clean_img_name(image: Path) -> Path:
 
 
 ##############################################################################
-class EvernoteConverter(MarkdownConverter):
+class EvernoteConverter(MarkdownConverter):  # type: ignore
     """Markdownify class for pulling data out of Evernote HTML files."""
 
     def __init__(self) -> None:
@@ -109,7 +109,7 @@ class EvernoteConverter(MarkdownConverter):
                 return f"![[{clean_img_name(Path(photo)).name}]]"
         except KeyError:
             pass
-        return super().convert_img(el, text, convert_as_inline)
+        return str(super().convert_img(el, text, convert_as_inline))
 
 
 ##############################################################################
