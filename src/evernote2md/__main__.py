@@ -22,6 +22,27 @@ from pytz import timezone
 
 
 ##############################################################################
+def clean_img_name(image: Path) -> Path:
+    """Clean up the name of an image.
+
+    Args:
+        image: The name of the image.
+
+    Returns:
+        The cleaned name of the image.
+
+    Notes:
+        Evernote sometimes has an image with no extension, called
+        `Evernote`. I suspect this came about when an image was pasted in,
+        or shared into the application in some way. This code ensures there
+        is an extension.
+
+        In every instance in my files it's always been a PNG.
+    """
+    return image if image.suffix else image.with_suffix(".png")
+
+
+##############################################################################
 class EvernoteConverter(MarkdownConverter):
     """Markdownify class for pulling data out of Evernote HTML files."""
 
@@ -85,7 +106,7 @@ class EvernoteConverter(MarkdownConverter):
         try:
             if isinstance(photo := el["src"], str):
                 self.photos += [photo]
-                return f"![[{Path(photo).name}]]"
+                return f"![[{clean_img_name(Path(photo)).name}]]"
         except KeyError:
             pass
         return super().convert_img(el, text, convert_as_inline)
@@ -252,7 +273,7 @@ def export(evernote: Path, daily: Path) -> None:
                 )
                 for photo in entry.photos:
                     print(f"\tAttaching {photo}")
-                    (attachments / Path(photo).name).write_bytes(
+                    (attachments / clean_img_name(Path(photo)).name).write_bytes(
                         (evernote / photo).read_bytes()
                     )
 
